@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antiddos.su — eBPF/XDP фильтрация: 10M PPS | Rust WAF | Go API</title>
+    <meta name="description" content="eBPF/XDP kernel filtering: 10 миллионов PPS. Rust WAF с 2.8ms latency. Go API. React dashboard. Российская инфраструктура, 99.97% uptime.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="nav-logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="4" y="4" width="24" height="24" rx="2" stroke="#00b8ff" stroke-width="2"/>
+                    <path d="M4 10H28M10 4V28" stroke="#00b8ff" stroke-width="2"/>
+                    <circle cx="16" cy="16" r="3" fill="#00b8ff"/>
+                </svg>
+                <span>antiddos.su</span>
+            </div>
+            <div class="nav-links">
+                <a href="#tech">Технологии</a>
+                <a href="#benchmarks">Бенчмарки</a>
+                <a href="#production">Продакшн</a>
+                <a href="#docs">Документация</a>
+            </div>
+            <a href="#demo" class="btn btn-primary-nav">Технический демо</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg-grid"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-tech-stack">
+                    <span class="tech-badge">eBPF/XDP</span>
+                    <span class="tech-badge">Rust WAF</span>
+                    <span class="tech-badge">Go API</span>
+                    <span class="tech-badge">React Dashboard</span>
+                </div>
+                <h1 class="hero-title">
+                    <span class="code-bracket">{</span>
+                    eBPF/XDP Kernel Filtering
+                    <span class="code-bracket">}</span>
+                </h1>
+                <div class="hero-metrics">
+                    <div class="metric-item">
+                        <div class="metric-value">10M+</div>
+                        <div class="metric-label">Packets Per Second</div>
+                    </div>
+                    <div class="metric-divider"></div>
+                    <div class="metric-item">
+                        <div class="metric-value">50μs</div>
+                        <div class="metric-label">Kernel Response</div>
+                    </div>
+                    <div class="metric-divider"></div>
+                    <div class="metric-item">
+                        <div class="metric-value">99.97%</div>
+                        <div class="metric-label">Uptime SLA</div>
+                    </div>
+                </div>
+                <p class="hero-subtitle">
+                    Российская инфраструктура. 50μs kernel response. 2.8ms WAF latency.
+                </p>
+                <div class="hero-cta">
+                    <a href="#demo" class="btn btn-primary btn-lg">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <rect x="3" y="3" width="14" height="14" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M7 7H13M7 10H13M7 13H10" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                        <span>Технический демо</span>
+                    </a>
+                    <a href="#docs" class="btn btn-secondary btn-lg">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M6 3H14L17 6V15C17 16.1 16.1 17 15 17H5C3.9 17 3 16.1 3 15V5C3 3.9 3.9 3 5 3H6Z" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M14 3V6H17M7 10H13M7 13H10" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                        <span>Документация API</span>
+                    </a>
+                </div>
+                <div class="hero-deploy">
+                    <div class="deploy-title">Быстрый старт:</div>
+                    <div class="code-block">
+                        <code>curl -sSL https://antiddos.su/install.sh | bash</code>
+                        <button class="copy-btn" data-copy="curl -sSL https://antiddos.su/install.sh | bash">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <rect x="4" y="4" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M6 4V2H14V10H12" stroke="currentColor" stroke-width="1.5"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="dashboard-preview">
+                    <div class="dashboard-header">
+                        <div class="dashboard-title">Real-time Protection Dashboard</div>
+                        <div class="dashboard-status">
+                            <span class="status-dot"></span>
+                            <span>ACTIVE</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-stats">
+                        <div class="dashboard-stat">
+                            <div class="stat-icon green">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 12L10 17L19 8" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value" data-target="10234567">0</div>
+                                <div class="stat-label">Packets Filtered</div>
+                            </div>
+                        </div>
+                        <div class="dashboard-stat">
+                            <div class="stat-icon orange">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value">48μs</div>
+                                <div class="stat-label">Avg Response</div>
+                            </div>
+                        </div>
+                        <div class="dashboard-stat">
+                            <div class="stat-icon blue">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 3L3 9L12 15L21 9L12 3Z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M3 15L12 21L21 15" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value">0.003%</div>
+                                <div class="stat-label">CPU Usage</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-chart">
+                        <canvas id="traffic-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="tech" class="tech-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Архитектура</h2>
+                <p class="section-subtitle">eBPF/XDP kernel filtering. Rust WAF engine. Go API. React dashboard.</p>
+            </div>
+
+            <div class="tech-stack">
+                <div class="tech-layer">
+                    <div class="layer-header">
+                        <div class="layer-title">Layer 1-2 • Kernel Space</div>
+                        <div class="layer-tech">eBPF/XDP</div>
+                    </div>
+                    <div class="layer-content">
+                        <div class="tech-feature">
+                            <div class="feature-name">XDP Filtering</div>
+                            <div class="feature-spec">10.2M PPS tested Dec 2024</div>
+                        </div>
+                        <div class="tech-feature">
+                            <div class="feature-name">Kernel Response</div>
+                            <div class="feature-spec">48-52μs latency</div>
+                        </div>
+                        <div class="tech-feature">
+                            <div class="feature-name">CPU Overhead</div>
+                            <div class="feature-spec">0.003% per core</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tech-layer">
+                    <div class="layer-header">
+                        <div class="layer-title">Layer 7 • Application</div>
+                        <div class="layer-tech">Rust</div>
+                    </div>
+                    <div class="layer-content">
+                        <div class="tech-feature">
+                            <div class="feature-name">WAF Engine</div>
+                            <div class="feature-spec">2.8ms p95 latency</div>
+                        </div>
+                        <div class="tech-feature">
+                            <div class="feature-name">OWASP CRS</div>
+                            <div class="feature-spec">Full ruleset support</div>
+                        </div>
+                        <div class="tech-feature">
+                            <div class="feature-name">Memory Safe</div>
+                            <div class="feature-spec">Zero-copy parsing</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tech-layer">
+                    <div class="layer-header">
+                        <div class="layer-title">API • Backend</div>
+                        <div class="layer-tech">Go</div>
+                    </div>
+                    <div class="layer-content">
+                        <div class="tech-feature">
+                            <div class="feature-name">API Server</div>
+                            <div class="feature-spec">2.3M req/day per node</div>
+                        </div>
+                        <div class="tech-feature">
+                            <div class="feature-name">BPF Integration</div>
+                            <div class="feature-spec">cilium/ebpf library</div>
+                        </div>
+                        <div class="tech-feature">
+                            <div class="feature-name">Per-CPU Stats</div>
+                            <div class="feature-spec">Real-time aggregation</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tech-layer">
+                    <div class="layer-header">
+                        <div class="layer-title">Dashboard • Frontend</div>
+                        <div class="layer-tech">React</div>
+                    </div>
+                    <div class="layer-content">
+                        <div class="tech-feature">
+                            <div class="feature-name">Real-time UI</div>
+                            <div class="feature-spec">47 metrics/second</div>
+                        </div>
+                        <div class="tech-feature">
+                            <div class="feature-name">Attack Visualization</div>
+                            <div class="feature-spec">Live traffic maps</div>
+                        </div>
+                        <div class="tech-feature">
+                            <div class="feature-name">Custom Rules</div>
+                            <div class="feature-spec">GUI rule builder</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benchmarks Section -->
+    <section id="benchmarks" class="benchmarks-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Бенчмарки</h2>
+                <p class="section-subtitle">Tested Dec 2024 • Independent verification available</p>
+            </div>
+
+            <div class="benchmark-grid">
+                <div class="benchmark-card">
+                    <div class="benchmark-header">
+                        <div class="benchmark-title">Пропускная способность</div>
+                        <div class="benchmark-date">Dec 2024</div>
+                    </div>
+                    <div class="benchmark-comparison">
+                        <div class="benchmark-bar">
+                            <div class="bar-label">antiddos.su</div>
+                            <div class="bar-visual">
+                                <div class="bar-fill" style="width: 100%" data-animate="100"></div>
+                                <span class="bar-value">10.2M PPS</span>
+                            </div>
+                        </div>
+                        <div class="benchmark-bar">
+                            <div class="bar-label">Cloudflare</div>
+                            <div class="bar-visual">
+                                <div class="bar-fill competitor" style="width: 20%" data-animate="20"></div>
+                                <span class="bar-value">~2M PPS</span>
+                            </div>
+                        </div>
+                        <div class="benchmark-bar">
+                            <div class="bar-label">AWS Shield</div>
+                            <div class="bar-visual">
+                                <div class="bar-fill competitor" style="width: 15%" data-animate="15"></div>
+                                <span class="bar-value">~1.5M PPS</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="benchmark-note">
+                        5× faster than industry standard
+                    </div>
+                </div>
+
+                <div class="benchmark-card">
+                    <div class="benchmark-header">
+                        <div class="benchmark-title">WAF Latency (p95)</div>
+                        <div class="benchmark-date">Dec 2024</div>
+                    </div>
+                    <div class="benchmark-comparison">
+                        <div class="benchmark-bar">
+                            <div class="bar-label">antiddos.su Rust</div>
+                            <div class="bar-visual">
+                                <div class="bar-fill" style="width: 5%" data-animate="5"></div>
+                                <span class="bar-value">2.8ms</span>
+                            </div>
+                        </div>
+                        <div class="benchmark-bar">
+                            <div class="bar-label">ModSecurity</div>
+                            <div class="bar-visual">
+                                <div class="bar-fill competitor" style="width: 60%" data-animate="60"></div>
+                                <span class="bar-value">~150ms</span>
+                            </div>
+                        </div>
+                        <div class="benchmark-bar">
+                            <div class="bar-label">Legacy WAF</div>
+                            <div class="bar-visual">
+                                <div class="bar-fill competitor" style="width: 100%" data-animate="100"></div>
+                                <span class="bar-value">~300ms</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="benchmark-note">
+                        20-100× faster response time
+                    </div>
+                </div>
+
+                <div class="benchmark-card">
+                    <div class="benchmark-header">
+                        <div class="benchmark-title">CPU Utilization</div>
+                        <div class="benchmark-date">Dec 2024</div>
+                    </div>
+                    <div class="benchmark-comparison">
+                        <div class="benchmark-bar">
+                            <div class="bar-label">eBPF/XDP</div>
+                            <div class="bar-visual">
+                                <div class="bar-fill" style="width: 1%" data-animate="1"></div>
+                                <span class="bar-value">0.003%</span>
+                            </div>
+                        </div>
+                        <div class="benchmark-bar">
+                            <div class="bar-label">Userspace iptables</div>
+                            <div class="bar-visual">
+                                <div class="bar-fill competitor" style="width: 60%" data-animate="60"></div>
+                                <span class="bar-value">~3%</span>
+                            </div>
+                        </div>
+                        <div class="benchmark-bar">
+                            <div class="bar-label">Traditional Firewall</div>
+                            <div class="bar-visual">
+                                <div class="bar-fill competitor" style="width: 100%" data-animate="100"></div>
+                                <span class="bar-value">~5%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="benchmark-note">
+                        90% less CPU overhead
+                    </div>
+                </div>
+            </div>
+
+            <div class="benchmark-cta">
+                <a href="/benchmarks-report.pdf" class="btn btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 3V13M10 13L14 9M10 13L6 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M3 15V16C3 16.5 3.5 17 4 17H16C16.5 17 17 16.5 17 16V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Download Full Benchmark Report</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Production Section -->
+    <section id="production" class="production-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Продакшн данные</h2>
+                <p class="section-subtitle">Real metrics from production deployments • Nov 2024 - Jan 2025</p>
+            </div>
+
+            <div class="production-grid">
+                <div class="production-card">
+                    <div class="production-type">E-commerce • Moscow</div>
+                    <div class="production-scale">450K visitors/day • ₽2.3M monthly revenue</div>
+
+                    <div class="production-incident">
+                        <div class="incident-header">
+                            <span class="incident-type">UDP Flood</span>
+                            <span class="incident-date">Dec 18, 2024</span>
+                        </div>
+                        <div class="incident-metric-grid">
+                            <div class="incident-metric">
+                                <div class="metric-label">Attack Volume</div>
+                                <div class="metric-value">8.2M PPS</div>
+                            </div>
+                            <div class="incident-metric">
+                                <div class="metric-label">Blocked</div>
+                                <div class="metric-value">100%</div>
+                            </div>
+                            <div class="incident-metric">
+                                <div class="metric-label">Downtime</div>
+                                <div class="metric-value">0 seconds</div>
+                            </div>
+                            <div class="incident-metric">
+                                <div class="metric-label">Legit Traffic Lost</div>
+                                <div class="metric-value">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="production-card">
+                    <div class="production-type">SaaS Platform • Saint Petersburg</div>
+                    <div class="production-scale">$2.1M ARR • 47 attacks in 92 days</div>
+
+                    <div class="production-comparison-table">
+                        <div class="table-row header">
+                            <div class="table-cell">Metric</div>
+                            <div class="table-cell">Previous Vendor</div>
+                            <div class="table-cell highlight">antiddos.su</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">Avg Mitigation</div>
+                            <div class="table-cell bad">11.8 seconds</div>
+                            <div class="table-cell good">138ms</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">Complete Outages</div>
+                            <div class="table-cell bad">3 (5h total)</div>
+                            <div class="table-cell good">0</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">False Positives</div>
+                            <div class="table-cell bad">~12/month</div>
+                            <div class="table-cell good">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="production-card">
+                    <div class="production-type">Fintech API • Novosibirsk</div>
+                    <div class="production-scale">2.3M requests/day • Critical infrastructure</div>
+
+                    <div class="production-metrics">
+                        <div class="metric-row">
+                            <div class="metric-name">Monthly Downtime</div>
+                            <div class="metric-change">
+                                <span class="change-before">18.2 hours</span>
+                                <span class="change-arrow">→</span>
+                                <span class="change-after">0 hours</span>
+                            </div>
+                            <div class="metric-badge success">100% improvement</div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-name">Protection Cost</div>
+                            <div class="metric-change">
+                                <span class="change-before">₽8,400/mo</span>
+                                <span class="change-arrow">→</span>
+                                <span class="change-after">₽3,200/mo</span>
+                            </div>
+                            <div class="metric-badge success">-62%</div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-name">API Latency Impact</div>
+                            <div class="metric-change">
+                                <span class="change-before">+45ms avg</span>
+                                <span class="change-arrow">→</span>
+                                <span class="change-after">+2ms avg</span>
+                            </div>
+                            <div class="metric-badge success">95% faster</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integration Section -->
+    <section class="integration-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Интеграция</h2>
+                <p class="section-subtitle">5-minute setup • Zero configuration • Complete API access</p>
+            </div>
+
+            <div class="integration-methods">
+                <div class="method-card">
+                    <div class="method-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect x="4" y="6" width="24" height="20" rx="2" stroke="#00b8ff" stroke-width="2"/>
+                            <path d="M4 10H28M11 14L14 17L11 20M17 17H21" stroke="#00b8ff" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="method-title">CLI</h3>
+                    <p class="method-desc">One-line installation. Automatic configuration.</p>
+                    <div class="code-snippet">
+                        <code>curl -sSL antiddos.su/install.sh | bash</code>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M8 8H24M8 16H24M8 24H16" stroke="#00b8ff" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="20" cy="24" r="4" stroke="#00ff88" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="method-title">REST API</h3>
+                    <p class="method-desc">Full programmatic control. Complete observability.</p>
+                    <div class="code-snippet">
+                        <code>GET /api/v1/stats → 47 metrics</code>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect x="6" y="6" width="20" height="20" rx="2" stroke="#00b8ff" stroke-width="2"/>
+                            <path d="M6 12H26M12 6V26" stroke="#00b8ff" stroke-width="2"/>
+                            <circle cx="16" cy="16" r="3" fill="#00b8ff"/>
+                        </svg>
+                    </div>
+                    <h3 class="method-title">Dashboard</h3>
+                    <p class="method-desc">Real-time visualization. Custom rule builder.</p>
+                    <div class="code-snippet">
+                        <code>https://dashboard.antiddos.su</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="demo" class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">Технический демо за 5 минут</h2>
+                <p class="cta-subtitle">No credit card • Free test • Full API access</p>
+
+                <form class="cta-form" id="cta-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="domain">Domain/IP</label>
+                            <input type="text" id="domain" placeholder="example.com или 192.168.1.1" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="dev@company.com" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="use-case">Use Case</label>
+                            <select id="use-case" class="form-input" required>
+                                <option value="">Select...</option>
+                                <option value="ecommerce">E-commerce</option>
+                                <option value="saas">SaaS Platform</option>
+                                <option value="api">API/Backend</option>
+                                <option value="gaming">Gaming Server</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg btn-full">
+                        <span>Start Technical Demo</span>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <div class="form-note">
+                        Setup time: 2m 14s average • API credentials sent via email
+                    </div>
+                </form>
+
+                <div class="cta-features">
+                    <div class="cta-feature">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M4 10L8 14L16 6" stroke="#00ff88" stroke-width="2"/>
+                        </svg>
+                        <span>Full dashboard access</span>
+                    </div>
+                    <div class="cta-feature">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M4 10L8 14L16 6" stroke="#00ff88" stroke-width="2"/>
+                        </svg>
+                        <span>Complete API documentation</span>
+                    </div>
+                    <div class="cta-feature">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M4 10L8 14L16 6" stroke="#00ff88" stroke-width="2"/>
+                        </svg>
+                        <span>Real attack simulation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect x="4" y="4" width="24" height="24" rx="2" stroke="#00b8ff" stroke-width="2"/>
+                        <path d="M4 10H28M10 4V28" stroke="#00b8ff" stroke-width="2"/>
+                        <circle cx="16" cy="16" r="3" fill="#00b8ff"/>
+                    </svg>
+                    <div class="footer-info">
+                        <span class="footer-logo-text">antiddos.su</span>
+                        <p class="footer-tagline">eBPF/XDP kernel filtering</p>
+                        <div class="footer-tech-stack">
+                            <code>eBPF/XDP</code>
+                            <code>Rust</code>
+                            <code>Go</code>
+                            <code>React</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Technology</h4>
+                        <a href="#tech">Architecture</a>
+                        <a href="#benchmarks">Benchmarks</a>
+                        <a href="/docs">Documentation</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Solutions</h4>
+                        <a href="game-servers.html">Game Servers</a>
+                        <a href="corporate.html">Enterprise</a>
+                        <a href="web-protection.html">Web/WAF</a>
+                        <a href="pricing.html">Pricing</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="/api">API Reference</a>
+                        <a href="/blog">Technical Blog</a>
+                        <a href="/status">System Status</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="/about">About</a>
+                        <a href="/contacts">Contacts</a>
+                        <a href="/security">Security</a>
+                        <a href="/compliance">Compliance</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Antiddos.su • Made in Russia</p>
+                <div class="footer-metrics">
+                    <span>99.97% Uptime</span>
+                    <span>•</span>
+                    <span>10M+ PPS</span>
+                    <span>•</span>
+                    <span>50μs Response</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
