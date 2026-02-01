@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDN для бизнеса — ускорение сайта и защита — AntiDDoS.su</title>
+    <meta name="description" content="Что такое CDN, как работает сеть доставки контента. Преимущества CDN для бизнеса в России: ускорение сайта, снижение нагрузки, защита от DDoS.">
+    <meta name="keywords" content="CDN что это, сеть доставки контента, ускорение сайта, CDN Россия, CDN для бизнеса">
+    <meta property="og:title" content="CDN для бизнеса: ускорение сайта и защита от нагрузок">
+    <meta property="og:description" content="Как CDN ускоряет ваш сайт и защищает от перегрузок — руководство для бизнеса">
+    <meta property="og:type" content="article">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="blog-styles.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="container nav-container">
+            <a href="../index.html" class="nav-logo" style="text-decoration:none">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="4" y="4" width="24" height="24" rx="2" stroke="#00b8ff" stroke-width="2"/>
+                    <path d="M4 10H28M10 4V28" stroke="#00b8ff" stroke-width="2"/>
+                    <circle cx="16" cy="16" r="3" fill="#00b8ff"/>
+                </svg>
+                <span>antiddos.su</span>
+            </a>
+            <div class="nav-links">
+                <a href="../index.html#tech">Технологии</a>
+                <a href="../index.html#benchmarks">Бенчмарки</a>
+                <a href="index.html">Блог</a>
+            </div>
+            <a href="../index.html#demo" class="btn btn-primary-nav">Технический демо</a>
+        </div>
+    </nav>
+
+    <section class="article-page article-hero">
+        <div class="container">
+            <div class="article-breadcrumb">
+                <a href="../index.html">Главная</a>
+                <span>→</span>
+                <a href="index.html">Блог</a>
+                <span>→</span>
+                <span>CDN для бизнеса</span>
+            </div>
+            <div class="article-meta">
+                <span class="article-category">Технологии</span>
+                <span class="article-date">25 января 2026</span>
+            </div>
+            <h1 class="article-title">CDN для бизнеса: ускорение сайта и защита от нагрузок</h1>
+            <p class="article-description">Что такое CDN, как работает сеть доставки контента. Преимущества CDN для бизнеса в России: ускорение, снижение нагрузки, защита от DDoS.</p>
+        </div>
+    </section>
+
+    <section class="article-content">
+        <div class="container">
+            <div class="article-body">
+
+                <p>Каждая секунда задержки загрузки сайта стоит вам денег. По данным Google, увеличение времени загрузки с 1 до 3 секунд повышает вероятность отказа на 32%. С 1 до 5 секунд — на 90%. Для интернет-магазина каждые 100 мс задержки снижают конверсию на 1%.</p>
+
+                <p>CDN (Content Delivery Network — сеть доставки контента) решает эту проблему, размещая копии вашего контента на серверах по всему миру. Но CDN — это не только скорость. Это защита от нагрузок, отказоустойчивость и экономия на инфраструктуре.</p>
+
+                <h2>Что такое CDN простыми словами</h2>
+
+                <h3>Проблема без CDN</h3>
+
+                <p>Допустим, ваш сервер в Москве. Пользователь из Владивостока открывает сайт. Каждый HTTP-запрос проходит 6 000 км туда и обратно — минимум ~60 мс задержки только на транспорт. Реальная задержка — 100–200 мс из-за маршрутизации. Умножьте на десятки ресурсов страницы — сайт загружается 3–5 секунд.</p>
+
+                <h3>Решение с CDN</h3>
+
+                <p>CDN размещает копии контента на edge-серверах в разных городах. Пользователь получает контент с ближайшего сервера — за 10–20 мс вместо 100–200 мс.</p>
+
+                <p><strong>Ключевые компоненты:</strong></p>
+                <ul>
+                    <li><strong>Edge-серверы (PoP)</strong> — серверы в разных точках, хранящие кэш</li>
+                    <li><strong>Origin-сервер</strong> — ваш основной сервер</li>
+                    <li><strong>DNS-маршрутизация</strong> — направляет пользователя к ближайшему PoP</li>
+                    <li><strong>Кэш-менеджер</strong> — управляет хранением и обновлением контента</li>
+                </ul>
+
+                <h2>Как работает CDN: техническая сторона</h2>
+
+                <h3>DNS-резолвинг</h3>
+                <p>DNS-запрос направляется на CDN-резолвер, который определяет расположение пользователя и возвращает адрес ближайшего edge-сервера.</p>
+
+                <h3>Запрос к edge-серверу</h3>
+                <p><strong>Cache Hit:</strong> Edge-сервер мгновенно отдаёт контент. Origin не задействован.</p>
+                <p><strong>Cache Miss:</strong> Edge-сервер запрашивает контент у origin, кэширует и отдаёт пользователю.</p>
+
+                <h3>Уровни кэширования</h3>
+
+<pre><code>Пользователь
+    ↓
+Edge-сервер (PoP) — L1 кэш (ближайший)
+    ↓ (cache miss)
+Mid-Tier / Regional PoP — L2 кэш (региональный)
+    ↓ (cache miss)
+Origin Shield — L3 кэш (один запрос к origin на весь CDN)
+    ↓ (cache miss)
+Origin-сервер (ваш сервер)</code></pre>
+
+                <h2>Что раздавать через CDN</h2>
+
+                <h3>Статический контент</h3>
+                <ul>
+                    <li><strong>Изображения</strong> — фото товаров, баннеры (jpg, png, webp, avif)</li>
+                    <li><strong>CSS и JavaScript</strong> — стили и скрипты</li>
+                    <li><strong>Шрифты</strong> — woff2, woff, ttf</li>
+                    <li><strong>Видео</strong> — VOD-контент</li>
+                    <li><strong>Документы</strong> — PDF, архивы</li>
+                </ul>
+
+                <h3>Динамический контент</h3>
+                <p>Современные CDN ускоряют и динамический контент через Dynamic Site Acceleration (DSA), Edge Computing и API Acceleration.</p>
+
+                <h2>Преимущества CDN для бизнеса</h2>
+
+                <h3>1. Скорость загрузки</h3>
+                <ul>
+                    <li>Конверсия: <strong>+7%</strong> за каждые 100 мс ускорения</li>
+                    <li>Bounce rate: снижение на <strong>20–30%</strong></li>
+                    <li>Средний чек: рост на <strong>3–5%</strong></li>
+                    <li>SEO: Core Web Vitals — фактор ранжирования</li>
+                </ul>
+
+                <h3>2. Снижение нагрузки на сервер</h3>
+                <p>При Cache Hit Ratio 80–95% ваш сервер обрабатывает только 5–20% запросов. Можно использовать менее мощный сервер и выдерживать пиковые нагрузки.</p>
+
+                <h3>3. Отказоустойчивость</h3>
+                <p>Георезервирование, failover к origin, DDoS-абсорбция.</p>
+
+                <h3>4. Экономия трафика</h3>
+                <p>Снижение исходящего трафика с вашего сервера на 70–90%.</p>
+
+                <h3>5. Безопасность</h3>
+                <p>Скрытие реального IP origin-сервера, базовая фильтрация DDoS (в сочетании с <a href="waf-complete-guide.html">WAF</a>), SSL/TLS-терминация на edge.</p>
+
+                <h2>CDN и SEO</h2>
+
+                <h3>Core Web Vitals</h3>
+                <ul>
+                    <li><strong>LCP</strong> — CDN ускоряет загрузку основного контента. Цель: &lt; 2,5 с</li>
+                    <li><strong>INP</strong> — быстрая доставка JS снижает время до интерактивности. Цель: &lt; 200 мс</li>
+                    <li><strong>CLS</strong> — стабилизация загрузки ресурсов. Цель: &lt; 0,1</li>
+                </ul>
+
+                <h2>CDN в России: особенности</h2>
+
+                <h3>Географическая специфика</h3>
+                <p>Россия — 9 000 км от Москвы до Владивостока. Без CDN с точками в регионах задержка для Урала и Дальнего Востока катастрофическая.</p>
+
+                <p><strong>Ключевые точки:</strong> Москва, Санкт-Петербург, Екатеринбург, Новосибирск, Хабаровск/Владивосток, Ростов-на-Дону, Казань.</p>
+
+                <h3>Требования 152-ФЗ</h3>
+                <p>Для компаний, обрабатывающих персональные данные, важно наличие CDN-инфраструктуры на территории РФ.</p>
+
+                <h2>Для кого подходит CDN</h2>
+
+                <ul>
+                    <li><strong>E-commerce</strong> — тысячи изображений, пиковые нагрузки, конверсия</li>
+                    <li><strong>Медиа и контент</strong> — огромные объёмы, вирусные всплески, видео</li>
+                    <li><strong>SaaS</strong> — критичность SLA, пользователи в разных регионах</li>
+                    <li><strong>Игровая индустрия</strong> — многогигабайтные обновления</li>
+                    <li><strong>Финтех</strong> — минимальная задержка, регуляторные требования</li>
+                </ul>
+
+                <h2>CDN + Anti-DDoS + WAF: комплексная защита</h2>
+
+<pre><code>Internet Traffic
+       ↓
+┌──────────────────┐
+│  BGP Anti-DDoS   │ ← Фильтрация L3/L4
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│  WAF             │ ← Фильтрация L7
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│  CDN             │ ← Кэширование, ускорение
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│  Origin Server   │ ← Минимальная нагрузка
+└──────────────────┘</code></pre>
+
+                <p>Подробнее: <a href="ddos-attack-protection-2026.html">DDoS-атаки</a>, <a href="bgp-ddos-protection.html">BGP-фильтрация</a>, <a href="waf-complete-guide.html">WAF</a>.</p>
+
+                <h2>Как подключить CDN</h2>
+                <ol>
+                    <li><strong>Выбор провайдера.</strong> Учитывайте географию, безопасность, бюджет. <a href="choose-antiddos-provider.html">Чеклист выбора</a>.</li>
+                    <li><strong>Изменение DNS.</strong> CNAME-запись или изменение NS.</li>
+                    <li><strong>Настройка кэширования.</strong> Определите TTL.</li>
+                    <li><strong>SSL-сертификат.</strong> Let's Encrypt или коммерческий.</li>
+                    <li><strong>Тестирование.</strong> Проверьте работу через CDN.</li>
+                    <li><strong>Оптимизация.</strong> Cache-Control, оптимизация изображений, HTTP/2.</li>
+                </ol>
+
+                <h3>Метрики эффективности CDN</h3>
+                <ul>
+                    <li><strong>Cache Hit Ratio</strong> — цель: &gt; 85%</li>
+                    <li><strong>TTFB</strong> — цель: &lt; 200 мс</li>
+                    <li><strong>Bandwidth Offload</strong> — цель: &gt; 70%</li>
+                    <li><strong>Error Rate</strong> — цель: &lt; 0,1%</li>
+                </ul>
+
+                <h2>Стоимость CDN</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Сегмент</th>
+                            <th>Объём</th>
+                            <th>Стоимость/мес</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Малый бизнес</td>
+                            <td>до 1 ТБ/мес</td>
+                            <td>от 3 000 ₽</td>
+                        </tr>
+                        <tr>
+                            <td>Средний бизнес</td>
+                            <td>1–10 ТБ/мес</td>
+                            <td>от 10 000 ₽</td>
+                        </tr>
+                        <tr>
+                            <td>Крупный бизнес</td>
+                            <td>10–100 ТБ/мес</td>
+                            <td>от 30 000 ₽</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Заключение</h2>
+
+                <p>CDN — необходимость для любого бизнеса, серьёзно относящегося к производительности и доступности.</p>
+                <ul>
+                    <li><strong>Скорость = деньги.</strong> Каждые 100 мс — минус 1% конверсии</li>
+                    <li><strong>CDN снижает нагрузку</strong> на сервер на 70–90%</li>
+                    <li><strong>Для России</strong> критичны точки в регионах</li>
+                    <li><strong>CDN + WAF + Anti-DDoS</strong> — оптимальная комбинация</li>
+                    <li><strong>SEO-бонус</strong> — быстрый сайт лучше ранжируется</li>
+                </ul>
+
+                <div class="article-cta">
+                    <h3>Ускорьте ваш сайт с CDN</h3>
+                    <p>AntiDDoS.su предоставляет CDN с российской инфраструктурой, интеграцией с WAF и BGP Anti-DDoS.</p>
+                    <a href="../index.html#demo" class="btn btn-primary btn-lg">Запросить демо</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="related-articles">
+        <div class="container">
+            <h3 class="section-title" style="font-size:24px;margin-bottom:var(--space-lg)">Читайте также</h3>
+            <div class="related-grid">
+                <a href="ddos-attack-protection-2026.html" class="related-card">
+                    <h4>DDoS-атака: защита в 2026 году</h4>
+                    <p>Полное руководство по типам DDoS-атак и методам защиты.</p>
+                </a>
+                <a href="bgp-ddos-protection.html" class="related-card">
+                    <h4>BGP-защита от DDoS</h4>
+                    <p>Техническое руководство по BGP, Flowspec и Anycast.</p>
+                </a>
+                <a href="waf-complete-guide.html" class="related-card">
+                    <h4>WAF: полное руководство по защите</h4>
+                    <p>Как работает Web Application Firewall и OWASP Top-10.</p>
+                </a>
+                <a href="choose-antiddos-provider.html" class="related-card">
+                    <h4>Как выбрать Anti-DDoS провайдера</h4>
+                    <p>Чеклист из 12 критериев для выбора провайдера защиты.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect x="4" y="4" width="24" height="24" rx="2" stroke="#00b8ff" stroke-width="2"/>
+                        <path d="M4 10H28M10 4V28" stroke="#00b8ff" stroke-width="2"/>
+                        <circle cx="16" cy="16" r="3" fill="#00b8ff"/>
+                    </svg>
+                    <div class="footer-info">
+                        <span class="footer-logo-text">antiddos.su</span>
+                        <p class="footer-tagline">eBPF/XDP kernel filtering</p>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Technology</h4>
+                        <a href="../index.html#tech">Architecture</a>
+                        <a href="../index.html#benchmarks">Benchmarks</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Блог</h4>
+                        <a href="ddos-attack-protection-2026.html">DDoS-атаки 2026</a>
+                        <a href="bgp-ddos-protection.html">BGP-защита</a>
+                        <a href="waf-complete-guide.html">WAF руководство</a>
+                        <a href="cdn-for-business.html">CDN для бизнеса</a>
+                        <a href="choose-antiddos-provider.html">Выбор провайдера</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="../index.html#demo">Демо</a>
+                        <a href="../index.html">Главная</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Antiddos.su • Made in Russia</p>
+                <div class="footer-metrics">
+                    <span>99.97% Uptime</span>
+                    <span>•</span>
+                    <span>10M+ PPS</span>
+                    <span>•</span>
+                    <span>50μs Response</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

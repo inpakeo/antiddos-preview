@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAF — что это и как работает Web Application Firewall — AntiDDoS.su</title>
+    <meta name="description" content="Полное руководство по WAF: принцип работы, защита от OWASP Top-10, сравнение cloud WAF и on-premise. Как выбрать WAF для бизнеса.">
+    <meta name="keywords" content="WAF что это, Web Application Firewall, защита веб-приложений, OWASP Top-10, cloud WAF">
+    <meta property="og:title" content="WAF: полное руководство по Web Application Firewall">
+    <meta property="og:description" content="Всё о WAF: как работает, от чего защищает, как выбрать — руководство для бизнеса">
+    <meta property="og:type" content="article">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="blog-styles.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="container nav-container">
+            <a href="../index.html" class="nav-logo" style="text-decoration:none">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="4" y="4" width="24" height="24" rx="2" stroke="#00b8ff" stroke-width="2"/>
+                    <path d="M4 10H28M10 4V28" stroke="#00b8ff" stroke-width="2"/>
+                    <circle cx="16" cy="16" r="3" fill="#00b8ff"/>
+                </svg>
+                <span>antiddos.su</span>
+            </a>
+            <div class="nav-links">
+                <a href="../index.html#tech">Технологии</a>
+                <a href="../index.html#benchmarks">Бенчмарки</a>
+                <a href="index.html">Блог</a>
+            </div>
+            <a href="../index.html#demo" class="btn btn-primary-nav">Технический демо</a>
+        </div>
+    </nav>
+
+    <section class="article-page article-hero">
+        <div class="container">
+            <div class="article-breadcrumb">
+                <a href="../index.html">Главная</a>
+                <span>→</span>
+                <a href="index.html">Блог</a>
+                <span>→</span>
+                <span>WAF: полное руководство</span>
+            </div>
+            <div class="article-meta">
+                <span class="article-category">Технологии</span>
+                <span class="article-date">22 января 2026</span>
+            </div>
+            <h1 class="article-title">WAF: полное руководство по Web Application Firewall</h1>
+            <p class="article-description">Как работает WAF, от чего защищает, сравнение Cloud WAF и On-Premise. Практическое руководство для бизнеса.</p>
+        </div>
+    </section>
+
+    <section class="article-content">
+        <div class="container">
+            <div class="article-body">
+
+                <p>Веб-приложения — это фронт вашего бизнеса в интернете. Сайт, личный кабинет, API, мобильное приложение — всё это работает через HTTP/HTTPS и подвергается атакам каждую секунду. SQL-инъекции, XSS, CSRF, подбор паролей, <a href="ddos-attack-protection-2026.html">DDoS L7-уровня</a> — список угроз обширен и постоянно растёт.</p>
+
+                <p>Web Application Firewall (WAF) — это специализированный инструмент, который анализирует HTTP/HTTPS-трафик и блокирует вредоносные запросы до того, как они достигнут вашего приложения.</p>
+
+                <h2>Что такое WAF</h2>
+
+                <p>WAF (Web Application Firewall) — это фильтр прикладного уровня (Layer 7), который находится между пользователями и вашим веб-приложением. Он инспектирует каждый HTTP/HTTPS-запрос на наличие признаков атаки.</p>
+
+                <h3>WAF vs обычный файрвол</h3>
+
+                <p>Обычный сетевой файрвол (L3/L4) работает с IP-адресами и портами. Он не понимает содержимое HTTP-запросов. WAF работает на уровне приложения: разбирает HTTP-заголовки, параметры URL, тело запроса, cookies, декодирует URL-encoding, base64, unicode.</p>
+
+                <h3>Где расположен WAF в архитектуре</h3>
+
+<pre><code>Пользователь → DNS → [CDN] → WAF → Балансировщик → Веб-сервер → Приложение</code></pre>
+
+                <p>В сочетании с <a href="cdn-for-business.html">CDN</a> и <a href="bgp-ddos-protection.html">BGP-защитой</a> WAF образует многоуровневую систему безопасности.</p>
+
+                <h2>Как работает WAF</h2>
+
+                <h3>Сигнатурный анализ (Negative Security Model)</h3>
+
+                <p>WAF имеет базу известных паттернов атак (сигнатур). Каждый запрос проверяется на совпадение.</p>
+                <p><strong>Примеры сигнатур:</strong></p>
+                <ul>
+                    <li><code>' OR 1=1</code> → SQL-инъекция</li>
+                    <li><code>&lt;script&gt;alert(</code> → XSS</li>
+                    <li><code>../../../etc/passwd</code> → Path Traversal</li>
+                    <li><code>; cat /etc/passwd</code> → Command Injection</li>
+                </ul>
+
+                <h3>Поведенческий анализ (Positive Security Model)</h3>
+
+                <p>WAF строит модель «нормального» поведения приложения. Всё, что выходит за рамки модели, считается аномалией. Например: поле <code>email</code> принимает строку до 100 символов — запрос с 10 000 символами аномален.</p>
+
+                <h3>Machine Learning</h3>
+
+                <p>Современные WAF используют ML для классификации запросов, обнаружения аномалий, адаптации к новым типам атак и снижения ложных срабатываний.</p>
+
+                <h3>Режимы работы</h3>
+                <ul>
+                    <li><strong>Detection Mode</strong> — анализирует и логирует, но не блокирует</li>
+                    <li><strong>Prevention Mode</strong> — активно блокирует атаки</li>
+                    <li><strong>Learning Mode</strong> — строит модель нормального поведения</li>
+                </ul>
+
+                <h2>OWASP Top-10: от чего защищает WAF</h2>
+
+                <h3>A01: Broken Access Control</h3>
+                <p>WAF контролирует доступ к эндпоинтам, обнаруживает перебор идентификаторов (IDOR).</p>
+
+                <h3>A02: Cryptographic Failures</h3>
+                <p>Принудительный HTTPS-redirect, блокировка запросов с чувствительными данными в URL.</p>
+
+                <h3>A03: Injection</h3>
+                <p>Сигнатурный анализ SQL, NoSQL, OS-команд. Нормализация входных данных. Защита от SQL Injection, NoSQL Injection, Command Injection, LDAP Injection.</p>
+
+                <h3>A04: Insecure Design</h3>
+                <p>Rate limiting для критичных эндпоинтов, CAPTCHA для чувствительных операций.</p>
+
+                <h3>A05: Security Misconfiguration</h3>
+                <p>Блокировка доступа к служебным путям (<code>/.env</code>, <code>/wp-admin/install.php</code>), скрытие серверных заголовков.</p>
+
+                <h3>A06: Vulnerable Components</h3>
+                <p>Virtual patching — WAF блокирует эксплойты для известных CVE, давая время на обновление.</p>
+
+                <h3>A07: Authentication Failures</h3>
+                <p>Rate limiting для login-эндпоинтов, блокировка credential stuffing, защита от session fixation.</p>
+
+                <h3>A08: Software and Data Integrity</h3>
+                <p>Контроль целостности загружаемых файлов, блокировка deserialization-атак.</p>
+
+                <h3>A09: Logging and Monitoring Failures</h3>
+                <p>WAF сам является инструментом мониторинга — логирует все подозрительные запросы.</p>
+
+                <h3>A10: SSRF</h3>
+                <p>Блокировка запросов к внутренним IP-адресам (169.254.x.x, 10.x.x.x, 127.0.0.1).</p>
+
+                <h2>Дополнительные угрозы</h2>
+
+                <h3>DDoS L7 (HTTP Flood)</h3>
+                <p>WAF отличает ботов от реальных пользователей с помощью поведенческого анализа, JavaScript Challenge, CAPTCHA и fingerprinting браузера. Подробнее о <a href="ddos-attack-protection-2026.html">типах DDoS-атак</a>.</p>
+
+                <h3>Бот-атаки</h3>
+                <p>Credential stuffing, web scraping, inventory hoarding, click fraud.</p>
+
+                <h3>API-атаки</h3>
+                <p>Валидация схемы OpenAPI/Swagger, rate limiting по API-ключу, обнаружение GraphQL introspection.</p>
+
+                <h2>Типы WAF: Cloud vs On-Premise vs Host-Based</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Параметр</th>
+                            <th>Cloud WAF</th>
+                            <th>On-Premise</th>
+                            <th>Host-Based</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Стоимость</td>
+                            <td>₽₽</td>
+                            <td>₽₽₽₽</td>
+                            <td>₽ (или бесплатно)</td>
+                        </tr>
+                        <tr>
+                            <td>Подключение</td>
+                            <td>Минуты</td>
+                            <td>Недели/месяцы</td>
+                            <td>Часы</td>
+                        </tr>
+                        <tr>
+                            <td>Обслуживание</td>
+                            <td>Провайдер</td>
+                            <td>Ваша команда</td>
+                            <td>Ваша команда</td>
+                        </tr>
+                        <tr>
+                            <td>DDoS-защита</td>
+                            <td>Да</td>
+                            <td>Ограниченная</td>
+                            <td>Нет</td>
+                        </tr>
+                        <tr>
+                            <td>Масштабируемость</td>
+                            <td>Высокая</td>
+                            <td>Ограниченная</td>
+                            <td>Ограниченная</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Как выбрать WAF</h2>
+
+                <ol>
+                    <li><strong>Покрытие угроз.</strong> Минимум OWASP Top-10, плюс API-защита, бот-управление, DDoS L7.</li>
+                    <li><strong>Производительность.</strong> Задержка менее 5 мс.</li>
+                    <li><strong>Ложные срабатывания.</strong> Минимизация false positive.</li>
+                    <li><strong>Управление.</strong> Dashboard, визуальный редактор правил, API.</li>
+                    <li><strong>Интеграция.</strong> CDN, CI/CD, SIEM, IDS/IPS.</li>
+                    <li><strong>Поддержка.</strong> 24/7, помощь в настройке.</li>
+                    <li><strong>Соответствие.</strong> PCI DSS, 152-ФЗ.</li>
+                    <li><strong>Локализация.</strong> Точки фильтрации в России.</li>
+                </ol>
+
+                <h2>Virtual Patching</h2>
+
+                <p>Одно из самых ценных применений WAF. Когда обнаружена уязвимость в приложении, WAF может заблокировать её эксплуатацию правилом за минуты, давая время на обновление кода.</p>
+
+                <h2>WAF и производительность</h2>
+
+                <p>Правильно настроенный Cloud WAF добавляет 1–5 мс задержки. В сочетании с <a href="cdn-for-business.html">CDN</a> общая задержка может уменьшиться за счёт кэширования. Современные WAF поддерживают HTTP/2, HTTP/3, Brotli/gzip-сжатие.</p>
+
+                <h2>Заключение</h2>
+
+                <p>WAF — необходимый компонент безопасности любого веб-приложения. Ключевые рекомендации:</p>
+                <ul>
+                    <li><strong>Для большинства компаний</strong> оптимален Cloud WAF</li>
+                    <li><strong>Комбинируйте WAF с <a href="bgp-ddos-protection.html">BGP Anti-DDoS</a></strong> для полной защиты L3–L7</li>
+                    <li><strong>Используйте <a href="cdn-for-business.html">CDN</a></strong> для ускорения и дополнительной защиты</li>
+                    <li><strong>Virtual patching</strong> — страховка на время между обнаружением уязвимости и обновлением</li>
+                </ul>
+
+                <div class="article-cta">
+                    <h3>Протестируйте WAF бесплатно</h3>
+                    <p>AntiDDoS.su предоставляет Cloud WAF с российской инфраструктурой, ML-защитой и интеграцией с BGP Anti-DDoS.</p>
+                    <a href="../index.html#demo" class="btn btn-primary btn-lg">Запросить демо</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="related-articles">
+        <div class="container">
+            <h3 class="section-title" style="font-size:24px;margin-bottom:var(--space-lg)">Читайте также</h3>
+            <div class="related-grid">
+                <a href="ddos-attack-protection-2026.html" class="related-card">
+                    <h4>DDoS-атака: защита в 2026 году</h4>
+                    <p>Полное руководство по типам DDoS-атак и методам защиты.</p>
+                </a>
+                <a href="bgp-ddos-protection.html" class="related-card">
+                    <h4>BGP-защита от DDoS</h4>
+                    <p>Техническое руководство по BGP, Flowspec и Anycast.</p>
+                </a>
+                <a href="cdn-for-business.html" class="related-card">
+                    <h4>CDN для бизнеса: ускорение и защита</h4>
+                    <p>Как CDN ускоряет сайт и защищает от перегрузок.</p>
+                </a>
+                <a href="choose-antiddos-provider.html" class="related-card">
+                    <h4>Как выбрать Anti-DDoS провайдера</h4>
+                    <p>Чеклист из 12 критериев для выбора провайдера защиты.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect x="4" y="4" width="24" height="24" rx="2" stroke="#00b8ff" stroke-width="2"/>
+                        <path d="M4 10H28M10 4V28" stroke="#00b8ff" stroke-width="2"/>
+                        <circle cx="16" cy="16" r="3" fill="#00b8ff"/>
+                    </svg>
+                    <div class="footer-info">
+                        <span class="footer-logo-text">antiddos.su</span>
+                        <p class="footer-tagline">eBPF/XDP kernel filtering</p>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Technology</h4>
+                        <a href="../index.html#tech">Architecture</a>
+                        <a href="../index.html#benchmarks">Benchmarks</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Блог</h4>
+                        <a href="ddos-attack-protection-2026.html">DDoS-атаки 2026</a>
+                        <a href="bgp-ddos-protection.html">BGP-защита</a>
+                        <a href="waf-complete-guide.html">WAF руководство</a>
+                        <a href="cdn-for-business.html">CDN для бизнеса</a>
+                        <a href="choose-antiddos-provider.html">Выбор провайдера</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="../index.html#demo">Демо</a>
+                        <a href="../index.html">Главная</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Antiddos.su • Made in Russia</p>
+                <div class="footer-metrics">
+                    <span>99.97% Uptime</span>
+                    <span>•</span>
+                    <span>10M+ PPS</span>
+                    <span>•</span>
+                    <span>50μs Response</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

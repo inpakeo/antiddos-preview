@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGP в защите от DDoS — как работает BGP Flowspec — AntiDDoS.su</title>
+    <meta name="description" content="Техническое руководство по BGP-защите от DDoS: протокол BGP, Flowspec, Anycast, Remote Triggered Blackhole. Почему BGP — лучшее решение для Anti-DDoS.">
+    <meta name="keywords" content="BGP защита, BGP DDoS, BGP Flowspec, anycast, RTBH, скрабинг-центр">
+    <meta property="og:title" content="BGP-протокол в защите от DDoS: полное руководство">
+    <meta property="og:description" content="Как BGP, Flowspec и Anycast защищают от DDoS-атак мощностью в терабиты">
+    <meta property="og:type" content="article">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="blog-styles.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="container nav-container">
+            <a href="../index.html" class="nav-logo" style="text-decoration:none">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="4" y="4" width="24" height="24" rx="2" stroke="#00b8ff" stroke-width="2"/>
+                    <path d="M4 10H28M10 4V28" stroke="#00b8ff" stroke-width="2"/>
+                    <circle cx="16" cy="16" r="3" fill="#00b8ff"/>
+                </svg>
+                <span>antiddos.su</span>
+            </a>
+            <div class="nav-links">
+                <a href="../index.html#tech">Технологии</a>
+                <a href="../index.html#benchmarks">Бенчмарки</a>
+                <a href="index.html">Блог</a>
+            </div>
+            <a href="../index.html#demo" class="btn btn-primary-nav">Технический демо</a>
+        </div>
+    </nav>
+
+    <section class="article-page article-hero">
+        <div class="container">
+            <div class="article-breadcrumb">
+                <a href="../index.html">Главная</a>
+                <span>→</span>
+                <a href="index.html">Блог</a>
+                <span>→</span>
+                <span>BGP-защита от DDoS</span>
+            </div>
+            <div class="article-meta">
+                <span class="article-category">Технологии</span>
+                <span class="article-date">18 января 2026</span>
+            </div>
+            <h1 class="article-title">BGP-протокол в защите от DDoS: как работает и почему это лучшее решение</h1>
+            <p class="article-description">Техническое руководство по BGP-защите от DDoS: протокол BGP, Flowspec, Anycast, RTBH и практическое подключение.</p>
+        </div>
+    </section>
+
+    <section class="article-content">
+        <div class="container">
+            <div class="article-body">
+
+                <p>Когда мощность <a href="ddos-attack-protection-2026.html">DDoS-атаки</a> измеряется терабитами в секунду, никакой отдельный сервер или файрвол не справится. Нужно решение, которое работает на уровне глобальной маршрутизации — и этим решением является BGP (Border Gateway Protocol).</p>
+
+                <p>BGP — протокол, на котором держится маршрутизация всего интернета. Именно он определяет, по какому пути пойдут ваши пакеты от точки А к точке Б. И именно BGP даёт наиболее мощные инструменты для защиты от DDoS.</p>
+
+                <h2>Что такое BGP: основы</h2>
+
+                <h3>Протокол маршрутизации интернета</h3>
+
+                <p>BGP (Border Gateway Protocol) — это протокол динамической маршрутизации, который связывает между собой автономные системы (AS) в интернете. Каждый крупный провайдер, хостинг, облачная платформа — это автономная система со своим номером (ASN).</p>
+
+                <h3>Ключевые термины</h3>
+                <ul>
+                    <li><strong>AS (Autonomous System)</strong> — сеть под единым административным управлением с уникальным номером ASN</li>
+                    <li><strong>BGP-сессия (peering)</strong> — соединение между двумя BGP-маршрутизаторами</li>
+                    <li><strong>Префикс</strong> — блок IP-адресов, объявляемый по BGP (например, 203.0.113.0/24)</li>
+                    <li><strong>AS-path</strong> — последовательность AS, через которые проходит маршрут</li>
+                    <li><strong>Community</strong> — метка для управления политиками маршрутизации</li>
+                </ul>
+
+                <h2>Как BGP используется для защиты от DDoS</h2>
+
+                <h3>Принцип перенаправления трафика</h3>
+
+                <p>Базовая идея BGP-based Anti-DDoS защиты:</p>
+                <ol>
+                    <li>В нормальном режиме трафик идёт напрямую к вашим серверам</li>
+                    <li>При обнаружении атаки трафик перенаправляется через скрабинг-центры</li>
+                    <li>В скрабинг-центре вредоносный трафик отфильтровывается</li>
+                    <li>Чистый трафик доставляется к вашим серверам по защищённому каналу (GRE-туннель)</li>
+                </ol>
+
+                <h3>Режимы работы</h3>
+
+                <h4>Always-On (постоянная фильтрация)</h4>
+
+                <p>Трафик постоянно проходит через скрабинг-центры. Нулевое время реакции на атаку.</p>
+                <p><strong>Плюсы:</strong> мгновенная защита, постоянный мониторинг, защита от burst-атак.</p>
+                <p><strong>Минусы:</strong> небольшое увеличение задержки (1–5 мс), выше стоимость.</p>
+
+                <h4>On-Demand (по требованию)</h4>
+
+                <p>Трафик перенаправляется только при обнаружении атаки.</p>
+                <p><strong>Плюсы:</strong> нет дополнительной задержки в нормальном режиме, ниже стоимость.</p>
+                <p><strong>Минусы:</strong> время переключения 30 секунд — 2 минуты (BGP convergence).</p>
+
+                <h2>BGP Flowspec: гранулярная фильтрация</h2>
+
+                <h3>Что такое Flowspec</h3>
+
+                <p>BGP Flowspec (RFC 5575, обновлён RFC 8955) — расширение протокола BGP для передачи правил фильтрации трафика непосредственно через BGP-сессию. По сути, это распределённый файрвол на уровне сети.</p>
+
+                <h3>Компоненты правила Flowspec</h3>
+
+                <p><strong>Match (условия совпадения):</strong> IP-адрес источника/назначения, протокол, порт, длина пакета, DSCP-метка, фрагментация, TCP-флаги.</p>
+
+                <p><strong>Action (действия):</strong></p>
+                <ul>
+                    <li><code>traffic-rate 0</code> — заблокировать (drop)</li>
+                    <li><code>traffic-rate N</code> — ограничить скорость</li>
+                    <li><code>redirect</code> — перенаправить в VRF</li>
+                    <li><code>traffic-marking</code> — перемаркировать DSCP</li>
+                </ul>
+
+                <h3>Пример: блокировка UDP Flood</h3>
+
+<pre><code>Flowspec Rule:
+  Destination: 203.0.113.0/24
+  Protocol: UDP
+  Source Port: > 1024
+  Destination Port: 80
+  Action: traffic-rate 0  (drop)</code></pre>
+
+                <h3>Пример: rate-limiting DNS Amplification</h3>
+
+<pre><code>Flowspec Rule:
+  Destination: 203.0.113.0/24
+  Protocol: UDP
+  Source Port: 53
+  Packet Length: > 512
+  Action: traffic-rate 100000  (100 Kbps limit)</code></pre>
+
+                <h3>Преимущества Flowspec перед ACL</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Параметр</th>
+                            <th>ACL на маршрутизаторе</th>
+                            <th>BGP Flowspec</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Распространение</td>
+                            <td>Ручная настройка</td>
+                            <td>Автоматическое через BGP</td>
+                        </tr>
+                        <tr>
+                            <td>Скорость применения</td>
+                            <td>Минуты (вручную)</td>
+                            <td>Секунды</td>
+                        </tr>
+                        <tr>
+                            <td>Масштабируемость</td>
+                            <td>Ограничена</td>
+                            <td>Вся сеть</td>
+                        </tr>
+                        <tr>
+                            <td>Автоматизация</td>
+                            <td>Сложная</td>
+                            <td>Нативная через BGP</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Anycast: распределение нагрузки DDoS-атаки</h2>
+
+                <p>Anycast — метод маршрутизации, при котором один IP-адрес объявляется из множества географически распределённых точек. DDoS-трафик автоматически распределяется между всеми точками присутствия. Атака мощностью 5 Тбит/с, распределённая между 50 точками, превращается в 100 Гбит/с на каждую.</p>
+
+                <p>Комбинация Anycast и BGP-фильтрации даёт максимальный эффект: географическое рассредоточение, локальная фильтрация, отказоустойчивость и низкая задержка.</p>
+
+                <h2>RTBH: Remote Triggered Blackhole</h2>
+
+                <p>RTBH — механизм BGP для экстренного «зануления» трафика. Используется как крайняя мера.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Параметр</th>
+                            <th>RTBH</th>
+                            <th>Flowspec</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Гранулярность</td>
+                            <td>Только IP-адрес</td>
+                            <td>IP + порт + протокол + размер</td>
+                        </tr>
+                        <tr>
+                            <td>Побочный эффект</td>
+                            <td>Блокировка всего трафика</td>
+                            <td>Точечная фильтрация</td>
+                        </tr>
+                        <tr>
+                            <td>Поддержка</td>
+                            <td>Все провайдеры</td>
+                            <td>Крупные провайдеры</td>
+                        </tr>
+                        <tr>
+                            <td>Применение</td>
+                            <td>Экстренная мера</td>
+                            <td>Основной инструмент</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Практическое подключение BGP-защиты</h2>
+
+                <h3>Что нужно для подключения</h3>
+                <ol>
+                    <li><strong>Собственный блок IP-адресов</strong> и номер автономной системы (ASN)</li>
+                    <li><strong>BGP-маршрутизатор</strong> (BIRD, FRRouting, VyOS)</li>
+                    <li><strong>Согласие на анонс</strong> через ROA/RPKI или IRR</li>
+                </ol>
+
+                <h3>Схема подключения</h3>
+
+<pre><code>Internet Traffic
+      │
+      ▼
+┌─────────────────┐
+│  AntiDDoS.su    │
+│  Scrubbing      │
+│  Network        │
+│  (BGP Anycast)  │
+└────────┬────────┘
+         │  Clean Traffic
+         │  (GRE/Direct)
+         ▼
+┌─────────────────┐
+│  Your Network   │
+│  (Origin)       │
+└─────────────────┘</code></pre>
+
+                <h2>Преимущества BGP-защиты</h2>
+
+                <h3>Vs DNS-based редирект</h3>
+                <p>DNS-based защита имеет серьёзные ограничения: TTL-задержка, обход через IP, только HTTP/HTTPS. BGP-защита работает на сетевом уровне и защищает весь трафик.</p>
+
+                <h3>Vs On-premise оборудование</h3>
+                <p>Аппаратные Anti-DDoS устройства ограничены каналом, стоят от сотен тысяч долларов и не масштабируются. BGP-защита фильтрует трафик до вашего канала.</p>
+
+                <h3>Vs Облачные WAF-прокси</h3>
+                <p>Облачные WAF защищают только L7, добавляют задержку и создают vendor lock-in. BGP-защита — протокольно-агностичная.</p>
+
+                <h2>BGP-защита и другие уровни безопасности</h2>
+
+                <p>Лучшая стратегия — многоуровневая защита:</p>
+                <ul>
+                    <li><strong>BGP Anti-DDoS</strong> — фильтрация volumetric и protocol-атак (L3/L4)</li>
+                    <li><strong><a href="waf-complete-guide.html">WAF</a></strong> — защита от L7-атак и уязвимостей веб-приложений</li>
+                    <li><strong><a href="cdn-for-business.html">CDN</a></strong> — распределение нагрузки и ускорение контента</li>
+                </ul>
+
+                <h2>Технические стандарты</h2>
+                <ul>
+                    <li><strong>RFC 4271</strong> — BGP-4 (основной протокол)</li>
+                    <li><strong>RFC 5575</strong> — BGP Flowspec (оригинальный)</li>
+                    <li><strong>RFC 8955</strong> — BGP Flowspec (обновлённый)</li>
+                    <li><strong>RFC 7999</strong> — BGP Blackhole Community (RTBH)</li>
+                    <li><strong>RFC 8210</strong> — RPKI-to-Router Protocol</li>
+                    <li><strong>RFC 6811</strong> — BGP Prefix Origin Validation (RPKI)</li>
+                </ul>
+
+                <h2>Заключение</h2>
+
+                <p>BGP-based защита — наиболее мощный и надёжный метод борьбы с <a href="ddos-attack-protection-2026.html">DDoS-атаками</a>. Она работает на сетевом уровне, масштабируется до терабит, не зависит от протокола прикладного уровня.</p>
+
+                <p>Ключевые инструменты:</p>
+                <ul>
+                    <li><strong>BGP-перенаправление</strong> через скрабинг-центры</li>
+                    <li><strong>BGP Flowspec</strong> — гранулярные правила фильтрации</li>
+                    <li><strong>Anycast</strong> — распределение нагрузки DDoS</li>
+                    <li><strong>RTBH</strong> — экстренное «зануление»</li>
+                </ul>
+
+                <p>При <a href="choose-antiddos-provider.html">выборе провайдера Anti-DDoS</a> убедитесь, что он поддерживает все эти механизмы.</p>
+
+                <div class="article-cta">
+                    <h3>Подключите BGP-защиту</h3>
+                    <p>AntiDDoS.su предоставляет BGP-based Anti-DDoS защиту с ёмкостью до 10 Тбит/с, Flowspec, Anycast-сетью и подключением за часы.</p>
+                    <a href="../index.html#demo" class="btn btn-primary btn-lg">Запросить демо</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="related-articles">
+        <div class="container">
+            <h3 class="section-title" style="font-size:24px;margin-bottom:var(--space-lg)">Читайте также</h3>
+            <div class="related-grid">
+                <a href="ddos-attack-protection-2026.html" class="related-card">
+                    <h4>DDoS-атака: защита в 2026 году</h4>
+                    <p>Полное руководство по типам DDoS-атак и методам защиты.</p>
+                </a>
+                <a href="waf-complete-guide.html" class="related-card">
+                    <h4>WAF: полное руководство по защите</h4>
+                    <p>Как работает Web Application Firewall и защита от OWASP Top-10.</p>
+                </a>
+                <a href="cdn-for-business.html" class="related-card">
+                    <h4>CDN для бизнеса: ускорение и защита</h4>
+                    <p>Как CDN ускоряет сайт и защищает от перегрузок.</p>
+                </a>
+                <a href="choose-antiddos-provider.html" class="related-card">
+                    <h4>Как выбрать Anti-DDoS провайдера</h4>
+                    <p>Чеклист из 12 критериев для выбора провайдера защиты.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect x="4" y="4" width="24" height="24" rx="2" stroke="#00b8ff" stroke-width="2"/>
+                        <path d="M4 10H28M10 4V28" stroke="#00b8ff" stroke-width="2"/>
+                        <circle cx="16" cy="16" r="3" fill="#00b8ff"/>
+                    </svg>
+                    <div class="footer-info">
+                        <span class="footer-logo-text">antiddos.su</span>
+                        <p class="footer-tagline">eBPF/XDP kernel filtering</p>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Technology</h4>
+                        <a href="../index.html#tech">Architecture</a>
+                        <a href="../index.html#benchmarks">Benchmarks</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Блог</h4>
+                        <a href="ddos-attack-protection-2026.html">DDoS-атаки 2026</a>
+                        <a href="bgp-ddos-protection.html">BGP-защита</a>
+                        <a href="waf-complete-guide.html">WAF руководство</a>
+                        <a href="cdn-for-business.html">CDN для бизнеса</a>
+                        <a href="choose-antiddos-provider.html">Выбор провайдера</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="../index.html#demo">Демо</a>
+                        <a href="../index.html">Главная</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Antiddos.su • Made in Russia</p>
+                <div class="footer-metrics">
+                    <span>99.97% Uptime</span>
+                    <span>•</span>
+                    <span>10M+ PPS</span>
+                    <span>•</span>
+                    <span>50μs Response</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
